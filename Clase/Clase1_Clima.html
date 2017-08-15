@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Hola Mundo</title>	
+
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />    	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<script src="alertify.min.js"></script>
+	<link rel="stylesheet" href="css/alertify.core.css">
+	<link rel="stylesheet" href="css/alertify.bootstrap.css">
+	
+</head>
+<style>
+
+	body{
+		background-image: url("./images/sky2.jpg");
+
+align-content: center;
+	}
+
+	div{
+		color: white;
+	}
+
+	p{
+		font-size: 30px;
+		background-color: black;
+		width: 500px;
+		display: inline-block;
+		margin: 15px;
+		opacity: 0.8;
+	}
+
+	.button5 {
+	  
+	  width: 170px;
+	  height: 50px;
+	  font-weight: 700;
+	  font-size: 17px;
+	  color: #fff;
+	  border: none;
+	  border-radius: 5px;
+	  background-color: #353636;
+	  transition-property: width;
+	  transition-duration: .9s;
+	  border: 2px solid #fff;
+	  display: inline-block;
+	}
+
+	#cityname {
+	  margin-top: 15px;
+	}
+
+	#city-name-wrapper, .temp {
+	  text-align: center;
+	}
+
+	.button5:hover {
+	    background-color: #292929;
+	    opacity: .9;
+	    color: white;
+	    border: 4px solid #fff;
+	    width: 270px; 
+	}
+
+	.button5:active {
+	    border: 5px solid #fff;
+	}
+	.text-center{
+		opacity: 0.8;
+
+	}
+	#navi{
+		
+		display: block;
+		list-style-type: none;
+	    margin: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    background-color: #262626;	    
+		font-size: 60px;
+		color: #fff;
+		text-align: center;
+
+	}
+
+</style>
+
+<script>
+
+
+if(navigator.onLine){
+
+
+$(document).ready(function() {
+
+
+ 	if (navigator.geolocation) {
+		$('.button5').on('click', function () {
+	    
+	    navigator.geolocation.getCurrentPosition(onSuccessGeolocating, onErrorGeolocating);
+
+	      function onErrorGeolocating(error)
+		    {
+
+		      switch(error.code) {
+		                case error.PERMISSION_DENIED: alert("Permission denied, the tool wont work");
+		                break;
+		                case error.POSITION_UNAVAILABLE: alert("No se pudo detectar la posición geográfica actual");
+		                break;
+		                case error.TIMEOUT: alert("Se ha agotado el tiempo de espera al consultar posición geográfica");
+		                break;
+		                default: alert("Error desconocido");
+		                break;
+		            }
+		    }
+
+	     function onSuccessGeolocating(position)
+	     {
+
+		      var lat 		= position.coords.latitude;
+		      var longit 	= position.coords.longitude;
+		      var city_name;
+		      var icode;
+		      var temp;
+		      var pressure;
+		      var wind_speed;
+		      var country_name;
+		      var weather_description;
+		      
+		      var tempFormat = "&units=metric";
+		      var apiKey = "5dd765a29b95b2e058dfd9f33a1dbd0d";
+
+
+		      	$.getJSON("http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + longit + tempFormat + "&appid=" + apiKey, function(data) {
+
+			        city_name 			= data["name"];
+			        country_name 		= data["sys"]["country"];
+			        icode 				= data["weather"][0]["icon"];
+			        weather_description = data["weather"][0]["description"];
+			        temp 				= data["main"]["temp"];
+			        pressure 			= data["main"]["pressure"];
+			        wind_speed 			= data["wind"]["speed"];
+
+			        var urlString = 'url("./images/' + weather_description + '.jpg")';
+			        document.body.style.backgroundImage = urlString;
+
+			        document.getElementById("cityname").style.border = "5px solid #fff";
+				    document.getElementById("citynam").style.border = "5px solid #fff";
+				    document.getElementById("cityna").style.border = "5px solid #fff";
+				    document.getElementById("cityn").style.border = "5px solid #fff";
+				    document.getElementById("city").style.border = "5px solid #fff";
+				    document.getElementById("cit").style.border = "5px solid #fff";
+			        
+				    $("#cityname").html("City Name: " + city_name + " " );
+			        $("#citynam").html("Country Name: " + country_name + " ");
+			        $("#cityna").html("Weather Description: " + weather_description + " ");
+			        $("#cityn").html("Temperature: " + temp + " ");
+			        $("#city").html("Pressure: " + pressure + " ");
+			        $("#cit").html("Wind_speed: " + wind_speed + " ");
+			        $("#cityname").attr("src", $(this).attr('src'));
+
+				})
+	  	
+	     }
+
+	    })
+
+}
+
+		else{
+			error('Su navegador no tiene soporte para su geolocalización');
+			alert("Failure");
+		}
+})
+
+} else {
+	alert('You are offline, this tool wont work')
+}
+
+
+$(document).ready(function(){
+		    $('[data-toggle="popover"]').popover();   
+		});
+
+
+</script>
+
+
+<body>
+<nav class="text-center">
+	<h1 id="navi">Forecast:</h1>	
+</nav>
+
+
+  <div id="city-name-wrapper">
+  <br><br><br>
+    <button class="button5" data-toggle="popover">Today is gonna:</button>	
+ 
+    <div id="city-forecast">
+      <p class="weather-descr col-xs-12"></p>
+      <!-- Begin of temp group  -->
+      <div class="row">
+        <div class="temp col-md-1 col-md-offset-4"></div>
+        <div class="temp-btn-group col-md-2" role="group" aria-label="temperature unit buttons">
+
+        </div>
+      </div>
+      <div>
+	      <p id="cityname"></p>
+	      <p id="citynam"></p>
+	      <p id="cityna"></p>
+	      <p id="cityn"></p>
+	      <p id="city"></p>
+	      <p id="cit"></p>
+      </div>
+S
+    </div>
+  </div>
+  <div id="hola"></div>
+
+  <div id="new"></div>
+
+</body>
+</html>
+
